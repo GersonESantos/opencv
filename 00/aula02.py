@@ -6,7 +6,7 @@ largura = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
 altura = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
 codec = cv2.VideoWriter_fourcc(*'XVID')
-gravador = cv2.VideoWriter('meu_video1.avi', codec, 20, (largura, altura))
+gravador = cv2.VideoWriter('meu_video1.avi', codec, 20, (largura, altura), isColor=False)
 
 while True:
     ret, frame = cap.read()
@@ -19,8 +19,8 @@ while True:
     gravador.write(frame_cinza)
     # nome arquivo, codec, FR, tamanho (L A)
 
-    cv2.imshow('CFBCursos - Original', frame)
-    #cv2.imshow('CFBCursos - Cinza', frame_cinza)
+    #cv2.imshow('CFBCursos - Original', frame)
+    cv2.imshow('CFBCursos - Cinza', frame_cinza)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
