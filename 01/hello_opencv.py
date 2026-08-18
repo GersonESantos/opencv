@@ -1,14 +1,27 @@
 import cv2
-import numpy as np
 
 def main():
     print(f"OpenCV version: {cv2.__version__}")
 
-    # Cria uma imagem em branco (fundo azul escuro)
-    width, height = 640, 360
-    img = np.full((height, width, 3), (60, 30, 0), dtype=np.uint8)
+    # Inicializa a câmera (0 é a webcam padrão)
+    cap = cv2.VideoCapture(0)
 
-    # Desenha o texto "Hello, OpenCV!"
+    if not cap.isOpened():
+        print("Erro: Não foi possível acessar a câmera.")
+        return
+
+    # Captura um único frame da câmera
+    ret, frame = cap.read()
+    cap.release()  # Libera a câmera imediatamente
+
+    if not ret:
+        print("Erro ao capturar a imagem da câmera.")
+        return
+
+    # Pega as dimensões da imagem capturada
+    height, width, _ = frame.shape
+
+    # Desenha o texto "Hello, OpenCV!" sobre a imagem da câmera
     text = "Hello, OpenCV!"
     font = cv2.FONT_HERSHEY_SIMPLEX
     font_scale = 1.2
@@ -16,24 +29,25 @@ def main():
     (text_w, text_h), _ = cv2.getTextSize(text, font, font_scale, thickness)
     x = (width - text_w) // 2
     y = (height + text_h) // 2
-    cv2.putText(img, text, (x, y), font, font_scale, (255, 255, 255), thickness, cv2.LINE_AA)
+    cv2.putText(frame, text, (x, y), font, font_scale, (255, 255, 255), thickness, cv2.LINE_AA)
 
-    # Desenha um retângulo e um círculo de exemplo
-    cv2.rectangle(img, (20, 20), (width - 20, height - 20), (0, 200, 255), 2)
-    cv2.circle(img, (width // 2, y + 60), 20, (0, 255, 0), -1)
+    # Desenha o retângulo e o círculo sobre a foto capturada
+    cv2.rectangle(frame, (20, 20), (width - 20, height - 20), (0, 200, 255), 2)
+    cv2.circle(frame, (width // 2, y + 60), 20, (0, 255, 0), -1)
 
-    output_path = "hello_opencv_output.png"
-    cv2.imwrite(output_path, img)
-    print(f"Imagem salva em: {output_path}")
+    # Salva a imagem em disco
+    output_path = "foto_camera_output.png"
+    cv2.imwrite(output_path, frame)
+    print(f"Imagem gravada com sucesso em: {output_path}")
 
-    # Tenta exibir a janela (funciona se houver ambiente gráfico disponível)
+    # Exibe a foto na tela (se houver interface gráfica)
     try:
-        cv2.imshow("Hello OpenCV", img)
+        cv2.imshow("Foto Capturada", frame)
         print("Pressione qualquer tecla na janela para fechar...")
         cv2.waitKey(0)
         cv2.destroyAllWindows()
     except cv2.error as e:
-        print(f"Não foi possível abrir uma janela (ambiente sem GUI): {e}")
+        print(f"Não foi possível abrir a janela: {e}")
 
 if __name__ == "__main__":
     main()
